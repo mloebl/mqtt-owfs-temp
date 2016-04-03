@@ -7,3 +7,4 @@ MQTT_TOPIC = /#
 MQTT_SUBTOPIC = /1-wire/
 POLLINTERVAL = 60
 DEVICESFILE = /etc/mqtt-owfs-temp/devices.csv
+METRICUNITS = 0
