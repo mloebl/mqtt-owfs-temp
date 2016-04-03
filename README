@@ -6,7 +6,12 @@ This script will read a list of hosts, ports and devices from /etc/mqtt-owfs-tem
 INSTALL
 =======
 
-sudo apt-get install python-mosquitto git
+sudo apt-get install python-mosquitto git python-ow python-pip
+NOTE: python-mosquitto may not be availble on some repos, but can be downloaded as a package
+
+sudo pip install setuptools
+sudo pip install setproctitl
+
 mkdir /etc/mqtt-owfs-temp/
 git clone git://github.com/kylegordon/mqtt-owfs-temp.git /usr/local/mqtt-owfs-temp/
 cp /usr/local/mqtt-owfs-temp/mqtt-owfs-temp.cfg.example /etc/mqtt-owfs-temp/mqtt-owfs-temp.cfg
