@@ -24,4 +24,4 @@ cp /usr/local/mqtt-owfs-temp/mqtt-owfs-temp.default /etc/default/mqtt-owfs-temp
 SERVER
 ======
 
-If you are interested in running a 1-wire owserver instance on a Raspberry Pi, I have written a short guide here http://lodge.glasgownet.com/2012/11/14/owfs-server-on-the-raspberry-pi/
+If you are interested in running a 1-wire owserver instance on a Raspberry Pi, the original autho has written a short guide here http://lodge.glasgownet.com/2012/11/14/owfs-server-on-the-raspberry-pi/
