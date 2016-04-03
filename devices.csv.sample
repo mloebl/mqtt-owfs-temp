@@ -3,3 +3,5 @@ servername,4304,28.C8D40D040000,temperature
 servername,4304,28.DDBF1D030000,temperature
 servername,4304,28.3C4F1D030000,humidity
 servername,4304,28.3C4F1D030000,temperature
+localhost,4304,28.3C4F1D030000/B1-R1-A,pressure
+localhost,4304,28.3C4F1D030000/S3-R1-A,illuminance
