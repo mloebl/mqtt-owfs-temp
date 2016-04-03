@@ -3,7 +3,7 @@
 
 __author__ = "Kyle Gordon"
 __copyright__ = "Copyright (C) Kyle Gordon"
-# Modified Mike Loebl 
+# Modified BY Mike Loebl 
 
 import os
 import logging
@@ -273,13 +273,23 @@ def main_loop():
             try:
 	        # Create sensor object
 		logging.debug(("Trying sensor %s with type %s on %s:%s") % (owpath, owsensortype, owserver, owport))
-                sensor = ow.Sensor(owpath)
-                
-		sensordata = getattr(sensor, owsensortype)
+        #        sensor = ow.Sensor(owpath)
+         	sensordata = ow.owfs_get(owpath + "/" + owsensortype)       
+	#	sensordata = getattr(sensor, owsensortype)
 
 		if (owsensortype == 'temperature' and METRICUNITS == '0'):
 		    sensordata = (farenheitCon(float(sensordata)))
 
+		if (owsensortype == 'pressure'):
+		    if ("B1-R1-A" in owpath):
+		    	pressureoffset = ow.owfs_get(owpath + "/gain")
+		    sensordata = (float(sensordata) + float(pressureoffset)) * 0.02953
+		
+		# if (owsensortype == 'illuminance'):                   
+                    # if ("S3-R1-A" in owpath):
+                    #   solaroffset = ow.owfs_get(owpath + "/gain")
+		    #	sensordata = float(solaroffset) + float(sensordata)
+			
                 #Query sensor state
                 logging.debug(("Sensor %s : %s") % (owpath, sensordata))
 	        mqttc.publish(MQTT_TOPIC + owpath + "/" + owsensortype, sensordata)
