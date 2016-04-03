@@ -3,6 +3,7 @@
 
 __author__ = "Kyle Gordon"
 __copyright__ = "Copyright (C) Kyle Gordon"
+# Modified Mike Loebl 
 
 import os
 import logging
@@ -29,6 +30,7 @@ MQTT_HOST = config.get("global", "mqtt_host")
 MQTT_PORT = config.getint("global", "mqtt_port")
 MQTT_SUBTOPIC = config.get("global", "MQTT_SUBTOPIC")
 MQTT_TOPIC = "/raw/" + socket.getfqdn() + MQTT_SUBTOPIC
+METRICUNITS = config.get("global", "METRICUNITS")
 
 POLLINTERVAL = config.getint("global", "pollinterval")
 DEVICESFILE = config.get("global", "devicesfile")
@@ -39,7 +41,7 @@ DEVICESFILE = config.get("global", "devicesfile")
 # kitchenpi.vpn.glasgownet.com, 4304, /28.3C4F1D030000/temperature
 # loftpi.vpn.glasgownet.com, 4304, /28.3C4F1D030000/temperature
 
-owserver = "kitchenpi.vpn.glasgownet.com"
+owserver = "localhost"
 
 APPNAME = "mqtt-owfs-temp"
 PRESENCETOPIC = "clients/" + socket.getfqdn() + "/" + APPNAME + "/state"
@@ -61,6 +63,11 @@ else:
 logging.info("Starting " + APPNAME)
 logging.info("INFO MODE")
 logging.debug("DEBUG MODE")
+
+def celsiusCon(farenheit):
+   return (farenheit - 32)*(5/9)
+def farenheitCon(celsius):
+   return ((celsius*(9/5)) + 32)
 
 # All the MQTT callbacks start here
 
@@ -249,6 +256,8 @@ def main_loop():
             owserver = DevicesList.data[item][0]
             owport = DevicesList.data[item][1]
             owpath = DevicesList.data[item][2]
+	    owsensortype =  DevicesList.data[item][3]
+
 	    logging.debug(("Querying %s on %s:%s") % (owpath, owserver, owport))
 
             # FIXME owserver to come from a list of devices, and their respective servers
@@ -263,11 +272,17 @@ def main_loop():
             
             try:
 	        # Create sensor object
+		logging.debug(("Trying sensor %s with type %s on %s:%s") % (owpath, owsensortype, owserver, owport))
                 sensor = ow.Sensor(owpath)
-            
+                
+		sensordata = getattr(sensor, owsensortype)
+
+		if (owsensortype == 'temperature' and METRICUNITS == '0'):
+		    sensordata = (farenheitCon(float(sensordata)))
+
                 #Query sensor state
-                logging.debug(("Sensor %s : %s") % (owpath, sensor.temperature))
-	        mqttc.publish(MQTT_TOPIC + owpath, sensor.temperature)
+                logging.debug(("Sensor %s : %s") % (owpath, sensordata))
+	        mqttc.publish(MQTT_TOPIC + owpath + "/" + owsensortype, sensordata)
 	        item += 1
 	    
 	    except ow.exUnknownSensor:
@@ -290,4 +305,3 @@ try:
 except KeyboardInterrupt:
     logging.info("Interrupted by keypress")
     sys.exit(0)
-
