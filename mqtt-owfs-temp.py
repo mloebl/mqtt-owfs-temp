@@ -12,7 +12,7 @@ import socket
 import time
 import sys
 
-import mosquitto
+import paho.mqtt.client as paho
 import ConfigParser
 import ow
 import setproctitle
@@ -47,7 +47,8 @@ APPNAME = "mqtt-owfs-temp"
 PRESENCETOPIC = "clients/" + socket.getfqdn() + "/" + APPNAME + "/state"
 setproctitle.setproctitle(APPNAME)
 client_id = APPNAME + "_%d" % os.getpid()
-mqttc = mosquitto.Mosquitto(client_id)
+
+mqttc = paho.Client()
 
 LOGFORMAT = '%(asctime)-15s %(message)s'
 
@@ -190,7 +191,7 @@ def connect():
     logging.debug("Connecting to %s:%s", MQTT_HOST, MQTT_PORT)
     # Set the Last Will and Testament (LWT) *before* connecting
     mqttc.will_set(PRESENCETOPIC, "0", qos=0, retain=True)
-    result = mqttc.connect(MQTT_HOST, MQTT_PORT, 60, True)
+    result = mqttc.connect(MQTT_HOST, MQTT_PORT, 60)
     if result != 0:
         logging.info("Connection failed with error code %s. Retrying", result)
         time.sleep(10)
