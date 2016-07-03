@@ -30,6 +30,8 @@ MQTT_HOST = config.get("global", "mqtt_host")
 MQTT_PORT = config.getint("global", "mqtt_port")
 MQTT_SUBTOPIC = config.get("global", "MQTT_SUBTOPIC")
 MQTT_TOPIC = "/raw/" + socket.getfqdn() + MQTT_SUBTOPIC
+MQTT_USERNAME = config.getint("global", "MQTT_USERNAME")
+MQTT_PASSWPRD = config.getint("global", "MQTT_PASSWPRD")
 METRICUNITS = config.get("global", "METRICUNITS")
 
 POLLINTERVAL = config.getint("global", "pollinterval")
