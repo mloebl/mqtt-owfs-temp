@@ -30,18 +30,12 @@ MQTT_HOST = config.get("global", "mqtt_host")
 MQTT_PORT = config.getint("global", "mqtt_port")
 MQTT_SUBTOPIC = config.get("global", "MQTT_SUBTOPIC")
 MQTT_TOPIC = "/raw/" + socket.getfqdn() + MQTT_SUBTOPIC
-MQTT_USERNAME = config.getint("global", "MQTT_USERNAME")
-MQTT_PASSWPRD = config.getint("global", "MQTT_PASSWPRD")
+MQTT_USERNAME = config.get("global", "MQTT_USERNAME")
+MQTT_PASSWORD = config.get("global", "MQTT_PASSWORD")
 METRICUNITS = config.get("global", "METRICUNITS")
 
 POLLINTERVAL = config.getint("global", "pollinterval")
 DEVICESFILE = config.get("global", "devicesfile")
-
-# FIXME, have list of devices - ie
-# kitchenpi.vpn.glasgownet.com, 4304, /28.C8D40D040000/temperature
-# kitchenpi.vpn.glasgownet.com, 4304, /28.DDBF1D030000/temperature
-# kitchenpi.vpn.glasgownet.com, 4304, /28.3C4F1D030000/temperature
-# loftpi.vpn.glasgownet.com, 4304, /28.3C4F1D030000/temperature
 
 owserver = "localhost"
 
@@ -190,9 +184,14 @@ def connect():
     The LWT will be published in the event of an unclean or
     unexpected disconnection.
     """
-    logging.debug("Connecting to %s:%s", MQTT_HOST, MQTT_PORT)
+    logging.info("Connecting to %s:%s", MQTT_HOST, MQTT_PORT)
     # Set the Last Will and Testament (LWT) *before* connecting
     mqttc.will_set(PRESENCETOPIC, "0", qos=0, retain=True)
+
+    if MQTT_USERNAME:
+        logging.info("Found username %s", MQTT_USERNAME)
+        mqttc.username_pw_set(MQTT_USERNAME, MQTT_PASSWORD)
+        
     result = mqttc.connect(MQTT_HOST, MQTT_PORT, 60)
     if result != 0:
         logging.info("Connection failed with error code %s. Retrying", result)
@@ -299,7 +298,7 @@ def main_loop():
 	        item += 1
 	    
 	    except ow.exUnknownSensor:
-	        logging.info("Threw an unknown sensor exception for device %s. Continuing", owpath)
+	        logging.debug("Threw an unknown sensor exception for device %s. Continuing", owpath)
 	        continue
 
 	# We only want to poll the sensors occasionally... not every one second that's the default for mqttc.loop
