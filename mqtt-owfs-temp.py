@@ -62,9 +62,9 @@ logging.info("INFO MODE")
 logging.debug("DEBUG MODE")
 
 def celsiusCon(farenheit):
-   return (farenheit - 32)*(5/9)
+   return (farenheit - 32)/(1.8)
 def farenheitCon(celsius):
-   return ((celsius*(9/5)) + 32)
+   return ((celsius*(1.8)) + 32)
 
 # All the MQTT callbacks start here
 
