@@ -9,7 +9,7 @@ sudo apt-get install git python-ow python-pip
 
 sudo pip install setuptools
 sudo pip install setproctitle
-sudo pop install paho-mqtt
+sudo pip install paho-mqtt
 
 mkdir /etc/mqtt-owfs-temp/
 git clone git://github.com/mloebl/mqtt-owfs-temp.git /usr/local/mqtt-owfs-temp/
